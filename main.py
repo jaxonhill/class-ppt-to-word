@@ -54,10 +54,6 @@ def create_bulleted_list(chosen_document, the_element):
         chosen_document.add_paragraph(point, style='List Bullet')
 
 
-def make_img_readable(src):
-    pass
-
-
 # Create the soup object and Word doc object
 soup = create_soup_from_html_file("chap01.html")
 document = Document()
@@ -68,18 +64,16 @@ element_list = soup.body.contents
 for element in element_list:
     if element.name == "h1":    # h1 elements are section titles for the chapter
         create_heading(document, element.text)
-        print(element.text)
 
     elif element.name == "div":     # divs store bullet points with info on each section
         create_bulleted_list(document, element)
 
-    elif element.name == "figure":     # graphs/figures/etc. will need to be inserted as well
-        img_src = element.find('img')['src']
-        document.add_picture(img_src)
-
     else:
         # Then it is none of these, then just put it in as plain text because we can't identify it
-        pass
+        if element.text != "\n" and element.text:   # filter out new lines and blank space as well
+            document.add_paragraph(element.text)
 
-
-document.save("C:/Users/19493/Desktop/new_word_doc.docx")
+print("PPT converted successfully!")
+new_doc_name = input("What would you like to name the new word file?\n")
+document.save(f"C:/Users/19493/Desktop/{new_doc_name}.docx")
+print(f"{new_doc_name}.docx successfully created!")
